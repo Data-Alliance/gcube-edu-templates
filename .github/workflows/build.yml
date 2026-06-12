@@ -11,6 +11,7 @@ on:
           - edu-ml-data
           - edu-nlp-hf
           - edu-rl-pytorch
+          - edu-genai-sd
         default: edu-dl-tensorflow
       base_image:
         type: string
