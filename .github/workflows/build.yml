@@ -8,6 +8,7 @@ on:
         options:
           - edu-dl-tensorflow
           - edu-cv-pytorch
+          - edu-ml-data
         default: edu-dl-tensorflow
       base_image:
         type: string
