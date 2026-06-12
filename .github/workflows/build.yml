@@ -9,6 +9,7 @@ on:
           - edu-dl-tensorflow
           - edu-cv-pytorch
           - edu-ml-data
+          - edu-nlp-hf
         default: edu-dl-tensorflow
       base_image:
         type: string
