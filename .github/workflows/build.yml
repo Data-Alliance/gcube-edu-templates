@@ -10,6 +10,7 @@ on:
           - edu-cv-pytorch
           - edu-ml-data
           - edu-nlp-hf
+          - edu-rl-pytorch
         default: edu-dl-tensorflow
       base_image:
         type: string
