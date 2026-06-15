@@ -6,6 +6,7 @@ on:
       template:
         type: choice
         options:
+          - all
           - edu-dl-tensorflow
           - edu-cv-pytorch
           - edu-ml-data
@@ -24,8 +25,26 @@ env:
   DOCKERHUB_OWNER: chaeyoon08
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      templates: ${{ steps.set.outputs.templates }}
+    steps:
+      - id: set
+        run: |
+          if [ "${{ inputs.template }}" = "all" ]; then
+            echo 'templates=["edu-dl-tensorflow","edu-cv-pytorch","edu-ml-data","edu-nlp-hf","edu-rl-pytorch","edu-genai-sd","edu-llm-train"]' >> $GITHUB_OUTPUT
+          else
+            echo 'templates=["${{ inputs.template }}"]' >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        template: ${{ fromJson(needs.prepare.outputs.templates) }}
     permissions:
       contents: read
       packages: write
@@ -38,7 +57,7 @@ jobs:
       - name: Resolve base image
         id: base
         run: |
-          case "${{ inputs.template }}" in
+          case "${{ matrix.template }}" in
             edu-dl-tensorflow)
               echo "image=ghcr.io/${{ env.OWNER }}/gcube-tensorflow-2.17-cuda12.8:runtime" >> $GITHUB_OUTPUT
               ;;
@@ -49,7 +68,7 @@ jobs:
               echo "image=ghcr.io/${{ env.OWNER }}/gcube-pytorch-2.11-cuda13.0:runtime" >> $GITHUB_OUTPUT
               ;;
             *)
-              echo "Unknown template: ${{ inputs.template }}" && exit 1
+              echo "Unknown template: ${{ matrix.template }}" && exit 1
               ;;
           esac
       - name: Log in to GHCR
@@ -66,13 +85,13 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ inputs.template }}
-          file: ./${{ inputs.template }}/Dockerfile
+          context: ./${{ matrix.template }}
+          file: ./${{ matrix.template }}/Dockerfile
           build-args: |
             BASE_IMAGE=${{ steps.base.outputs.image }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ inputs.template }}:${{ inputs.tag }}
-            ${{ env.DOCKERHUB_OWNER }}/${{ inputs.template }}:${{ inputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ matrix.template }}:${{ inputs.tag }}
+            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:${{ inputs.tag }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
           push: true
