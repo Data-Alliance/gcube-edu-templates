@@ -21,11 +21,17 @@ ghcr.io/<owner>/edu-dl-tensorflow:latest
 
 ## 환경변수
 
+모든 환경변수는 선택 사항입니다. 비공개 저장소를 사용하거나 커밋 작성자를 지정하려는 경우에만 입력합니다.
+
 | 변수 | 기본값 | 설명 |
 |---|---|---|
-| `JUPYTER_TOKEN` | (없음) | 접속 토큰. 미지정 시 토큰 없이 접속 가능 |
+| `JUPYTER_TOKEN` | (없음) | JupyterLab 접속 토큰. 미지정 시 토큰 없이 접속 |
+| `GIT_CLONE_REPO` | (없음) | 워크로드 시작 시 `/workspace`에 자동 clone할 저장소 URL |
+| `GIT_USER_NAME` | (없음) | git 커밋 작성자 이름 |
+| `GIT_USER_EMAIL` | (없음) | git 커밋 작성자 이메일 |
+| `GIT_TOKEN` | (없음) | git 인증 토큰(PAT). private 저장소 clone/push 시 필요 |
+| `GIT_HOST` | `github.com` | git 호스트. GitLab(`gitlab.com`) 또는 사내 git 서버 주소도 가능 |
 
-git 구성 및 작업 저장소 자동 clone 관련 환경변수(`GIT_USER_NAME`, `GIT_TOKEN`, `GIT_CLONE_REPO` 등)는 베이스 이미지에서 상속됩니다.
 
 ## 빌드
 

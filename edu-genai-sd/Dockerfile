@@ -12,7 +12,6 @@ RUN pip install --no-cache-dir \
         accelerate \
         safetensors \
         datasets \
-        invisible-watermark \
         opencv-python-headless \
         pillow \
         tqdm
