@@ -54,18 +54,22 @@ jobs:
         run: |
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
           df -h /
+      - name: Set lowercase owner
+        run: echo "OWNER_LC=${OWNER,,}" >> $GITHUB_ENV
+        env:
+          OWNER: ${{ github.repository_owner }}
       - name: Resolve base image
         id: base
         run: |
           case "${{ matrix.template }}" in
             edu-dl-tensorflow)
-              echo "image=ghcr.io/${{ env.OWNER }}/gcube-tensorflow-2.17-cuda12.8:runtime" >> $GITHUB_OUTPUT
+              echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-tensorflow-2.17-cuda12.8:runtime" >> $GITHUB_OUTPUT
               ;;
             edu-ml-data)
-              echo "image=ghcr.io/${{ env.OWNER }}/gcube-ubuntu24.04-cuda13.0:runtime" >> $GITHUB_OUTPUT
+              echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-ubuntu24.04-cuda13.0:runtime" >> $GITHUB_OUTPUT
               ;;
             edu-cv-pytorch|edu-nlp-hf|edu-rl-pytorch|edu-genai-sd|edu-llm-train)
-              echo "image=ghcr.io/${{ env.OWNER }}/gcube-pytorch-2.11-cuda13.0:runtime" >> $GITHUB_OUTPUT
+              echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-pytorch-2.11-cuda13.0:runtime" >> $GITHUB_OUTPUT
               ;;
             *)
               echo "Unknown template: ${{ matrix.template }}" && exit 1
@@ -90,7 +94,7 @@ jobs:
           build-args: |
             BASE_IMAGE=${{ steps.base.outputs.image }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ matrix.template }}:${{ inputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ inputs.tag }}
             ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:${{ inputs.tag }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}

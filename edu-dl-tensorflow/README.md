@@ -1,23 +1,34 @@
 # edu-dl-tensorflow
 
-TensorFlow 기반 딥러닝 교육용 이미지. `gcube-tensorflow` 베이스에 JupyterLab과 표준 데이터 분석 패키지를 포함합니다.
+TensorFlow/Keras 기반 딥러닝 교육용 이미지. `gcube-tensorflow` 베이스에 JupyterLab과 머신러닝 실습 패키지를 포함합니다. CNN, 전이학습 등 TensorFlow 기반 딥러닝 수업에 사용합니다.
 
 ## 구성
 
 | 항목 | 내용 |
 |---|---|
-| 기반 | `gcube-tensorflow-<tf>-cuda<cuda>` |
-| 패키지 | JupyterLab, NumPy, SciPy, scikit-learn, Matplotlib, Pillow, tqdm |
+| 기반 | `gcube-tensorflow-2.17-cuda12.8` (TensorFlow 2.17 포함) |
+| 패키지 | JupyterLab, ipykernel, scikit-learn, SciPy, Matplotlib, Pillow, tqdm |
 | 작업 디렉터리 | `/workspace` |
 | 포트 | 8888 |
 
-```
-ghcr.io/<owner>/edu-dl-tensorflow:latest
-```
+## 사용
 
-## 실행
+gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
-컨테이너 시작 시 JupyterLab이 자동 실행되며, `/workspace`를 작업 디렉터리로 사용합니다.
+| 항목 | 값 |
+|---|---|
+| 이미지 | `chaeyoon08/edu-dl-tensorflow:latest` |
+| 포트 | 8888 |
+| GPU | VRAM 8GB 이상 |
+
+배포 후 서비스 URL로 접속하면 JupyterLab이 열립니다.
+
+이미지는 GitHub Container Registry에서도 받을 수 있습니다.
+
+```
+ghcr.io/data-alliance/edu-dl-tensorflow:latest
+chaeyoon08/edu-dl-tensorflow:latest
+```
 
 ## 환경변수
 
@@ -31,10 +42,3 @@ ghcr.io/<owner>/edu-dl-tensorflow:latest
 | `GIT_USER_EMAIL` | (없음) | git 커밋 작성자 이메일 |
 | `GIT_TOKEN` | (없음) | git 인증 토큰(PAT). private 저장소 clone/push 시 필요 |
 | `GIT_HOST` | `github.com` | git 호스트. GitLab(`gitlab.com`) 또는 사내 git 서버 주소도 가능 |
-
-
-## 빌드
-
-GitHub Actions의 수동 실행(workflow_dispatch)으로 빌드하며, 템플릿·베이스 이미지·태그를 선택할 수 있습니다. ghcr.io와 Docker Hub에 동시 푸시됩니다.
-
-베이스 이미지(`gcube-tensorflow`)가 먼저 빌드되어 있어야 합니다.
