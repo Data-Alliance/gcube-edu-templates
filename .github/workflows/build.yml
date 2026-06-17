@@ -14,6 +14,7 @@ on:
           - edu-rl-pytorch
           - edu-genai-sd
           - edu-llm-train
+          - edu-audio-pytorch
         default: edu-cv-pytorch
       tag:
         type: string
@@ -33,7 +34,7 @@ jobs:
       - id: set
         run: |
           if [ "${{ inputs.template }}" = "all" ]; then
-            echo 'templates=["edu-dl-tensorflow","edu-cv-pytorch","edu-ml-data","edu-nlp-hf","edu-rl-pytorch","edu-genai-sd","edu-llm-train"]' >> $GITHUB_OUTPUT
+            echo 'templates=["edu-dl-tensorflow","edu-cv-pytorch","edu-ml-data","edu-nlp-hf","edu-rl-pytorch","edu-genai-sd","edu-llm-train","edu-audio-pytorch"]' >> $GITHUB_OUTPUT
           else
             echo 'templates=["${{ inputs.template }}"]' >> $GITHUB_OUTPUT
           fi
@@ -68,11 +69,11 @@ jobs:
             edu-ml-data)
               echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-ubuntu24.04-cuda13.0:runtime" >> $GITHUB_OUTPUT
               ;;
-            edu-cv-pytorch|edu-nlp-hf|edu-rl-pytorch|edu-genai-sd|edu-llm-train)
+            edu-cv-pytorch|edu-nlp-hf|edu-rl-pytorch|edu-genai-sd|edu-llm-train|edu-audio-pytorch)
               echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-pytorch-2.11-cuda13.0:runtime" >> $GITHUB_OUTPUT
               ;;
             *)
-              echo "Unknown template: ${{ matrix.template }}" && exit 1
+              echo "Unknown template: ${{ matrix.template }}" && exit 1l
               ;;
           esac
       - name: Log in to GHCR
