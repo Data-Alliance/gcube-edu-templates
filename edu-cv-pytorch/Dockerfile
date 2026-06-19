@@ -6,6 +6,7 @@ ENV JUPYTERLAB_DIR=/usr/local/lib/python3.12/dist-packages/jupyterlab
 
 RUN pip install --no-cache-dir \
         jupyterlab \
+        ipywidgets \
         ipykernel \
         opencv-python-headless \
         albumentations \
