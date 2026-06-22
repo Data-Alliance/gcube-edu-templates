@@ -7,7 +7,6 @@ LLM 파인튜닝·RAG 교육용 이미지. `gcube-pytorch` 베이스에 JupyterL
 | 항목 | 내용 |
 |---|---|
 | 기반 | `gcube-pytorch-2.11-cuda13.0` (PyTorch 포함) |
-| 패키지 | JupyterLab, ipykernel, transformers, datasets, tokenizers, sentencepiece, accelerate, peft, trl, bitsandbytes, einops, evaluate, tensorboard, scikit-learn, faiss-cpu, tqdm |
 | 작업 디렉터리 | `/workspace` |
 | 포트 | 8888 |
 
@@ -29,6 +28,32 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 ghcr.io/data-alliance/edu-llm-train:latest
 chaeyoon08/edu-llm-train:latest
 ```
+
+## 포함 환경
+
+**기준일:** 2026-06-19
+
+아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
+
+<!-- VERSIONS:START -->
+| 패키지 | 버전 |
+|---|---|
+| transformers | 5.12.1 |
+| tokenizers | (자동 입력) |
+| datasets | 5.0.0 |
+| peft | 0.19.1 |
+| trl | 1.6.0 |
+| bitsandbytes | 0.49.2 |
+| accelerate | 1.14.0 |
+| faiss-cpu | 1.14.3 |
+| sentencepiece | 0.2.1 |
+| einops | 0.8.2 |
+| evaluate | 0.4.6 |
+| scikit-learn | 1.9.0 |
+| tensorboard | 2.20.0 |
+| tqdm | 4.68.3 |
+| ipywidgets | 8.1.8 |
+<!-- VERSIONS:END -->
 
 ## 환경변수
 

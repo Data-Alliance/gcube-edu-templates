@@ -7,7 +7,6 @@ TensorFlow/Keras 기반 딥러닝 교육용 이미지. `gcube-tensorflow` 베이
 | 항목 | 내용 |
 |---|---|
 | 기반 | `gcube-tensorflow-2.17-cuda12.8` (TensorFlow 2.17 포함) |
-| 패키지 | JupyterLab, ipykernel, scikit-learn, SciPy, Matplotlib, Pillow, tqdm |
 | 작업 디렉터리 | `/workspace` |
 | 포트 | 8888 |
 
@@ -29,6 +28,25 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 ghcr.io/data-alliance/edu-dl-tensorflow:latest
 chaeyoon08/edu-dl-tensorflow:latest
 ```
+
+## 포함 환경
+
+**기준일:** 2026-06-19
+
+아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
+
+<!-- VERSIONS:START -->
+| 패키지 | 버전 |
+|---|---|
+| TensorFlow | 2.17.0+nv25.2 |
+| ipywidgets | 8.1.8 |
+| scikit-learn | 1.5.2 |
+| SciPy | 1.12.0 |
+| Pillow | 12.2.0 |
+| Matplotlib | 3.11.0 |
+| NumPy | 1.26.4 |
+| tqdm | 4.67.1 |
+<!-- VERSIONS:END -->
 
 ## 환경변수
 

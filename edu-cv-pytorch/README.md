@@ -7,7 +7,6 @@ PyTorch 기반 컴퓨터비전 교육용 이미지. `gcube-pytorch` 베이스에
 | 항목 | 내용 |
 |---|---|
 | 기반 | `gcube-pytorch-2.11-cuda13.0` (PyTorch, torchvision, torchaudio 포함) |
-| 패키지 | JupyterLab, ipykernel, OpenCV(headless), albumentations, Pillow, scikit-learn, SciPy, Matplotlib, tqdm |
 | 작업 디렉터리 | `/workspace` |
 | 포트 | 8888 |
 
@@ -29,6 +28,27 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 ghcr.io/data-alliance/edu-cv-pytorch:latest
 chaeyoon08/edu-cv-pytorch:latest
 ```
+
+## 포함 환경
+
+**기준일:** 2026-06-19
+
+아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
+
+<!-- VERSIONS:START -->
+| 패키지 | 버전 |
+|---|---|
+| torch | 2.11.0+cu130 |
+| torchvision | 0.26.0+cu130 |
+| ipywidgets | 8.1.8 |
+| opencv-python-headless | 4.13.0.92 |
+| albumentations | 2.0.8 |
+| Pillow | 12.1.1 |
+| scikit-learn | 1.9.0 |
+| SciPy | 1.17.1 |
+| Matplotlib | 3.11.0 |
+| tqdm | 4.68.3 |
+<!-- VERSIONS:END -->
 
 ## 환경변수
 

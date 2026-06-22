@@ -19,9 +19,10 @@ on:
           - edu-geo-gdal
           - edu-gnn-pyg
         default: edu-cv-pytorch
-      tag:
-        type: string
-        default: latest
+      update_readme:
+        type: boolean
+        description: 'Update README package versions after build'
+        default: true
 
 env:
   REGISTRY: ghcr.io
@@ -47,10 +48,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         template: ${{ fromJson(needs.prepare.outputs.templates) }}
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - uses: actions/checkout@v4
@@ -62,6 +64,8 @@ jobs:
         run: echo "OWNER_LC=${OWNER,,}" >> $GITHUB_ENV
         env:
           OWNER: ${{ github.repository_owner }}
+      - name: Set build date
+        run: echo "BUILD_DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
       - name: Resolve base image
         id: base
         run: |
@@ -95,11 +99,34 @@ jobs:
         with:
           context: ./${{ matrix.template }}
           file: ./${{ matrix.template }}/Dockerfile
+          load: true
           build-args: |
             BASE_IMAGE=${{ steps.base.outputs.image }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ inputs.tag }}
-            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:${{ inputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:latest
+            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.BUILD_DATE }}
+            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:latest
+            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:${{ env.BUILD_DATE }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
           push: true
+      - name: Update README versions
+        if: ${{ inputs.update_readme }}
+        run: |
+          python3 .github/scripts/update_readme_versions.py \
+            "./${{ matrix.template }}/README.md" \
+            "${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.BUILD_DATE }}" \
+            "$(date +%Y-%m-%d)"
+      - name: Commit README
+        if: ${{ inputs.update_readme }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- "./${{ matrix.template }}/README.md"; then
+            echo "No README changes."
+          else
+            git add "./${{ matrix.template }}/README.md"
+            git commit -m "docs: update ${{ matrix.template }} package versions (${{ env.BUILD_DATE }})"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin HEAD:${{ github.ref_name }}
+          fi
