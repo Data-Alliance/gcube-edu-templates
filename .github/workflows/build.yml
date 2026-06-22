@@ -19,6 +19,10 @@ on:
           - edu-geo-gdal
           - edu-gnn-pyg
         default: edu-cv-pytorch
+      release_date:
+        type: string
+        description: 'Release date tag (YYYYMMDD). Verified/confirmed provision date, not build date.'
+        default: "20260619"
       update_readme:
         type: boolean
         description: 'Update README package versions after build'
@@ -35,6 +39,16 @@ jobs:
     outputs:
       templates: ${{ steps.set.outputs.templates }}
     steps:
+      - id: validate
+        run: |
+          if ! echo "${{ inputs.release_date }}" | grep -qE '^[0-9]{8}$'; then
+            echo "ERROR: release_date must be 8 digits (YYYYMMDD): ${{ inputs.release_date }}"
+            exit 1
+          fi
+          if ! date -d "${{ inputs.release_date }}" >/dev/null 2>&1; then
+            echo "ERROR: release_date is not a valid date: ${{ inputs.release_date }}"
+            exit 1
+          fi
       - id: set
         run: |
           if [ "${{ inputs.template }}" = "all" ]; then
@@ -64,8 +78,8 @@ jobs:
         run: echo "OWNER_LC=${OWNER,,}" >> $GITHUB_ENV
         env:
           OWNER: ${{ github.repository_owner }}
-      - name: Set build date
-        run: echo "BUILD_DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
+      - name: Set release date
+        run: echo "RELEASE_DATE=${{ inputs.release_date }}" >> $GITHUB_ENV
       - name: Resolve base image
         id: base
         run: |
@@ -104,19 +118,20 @@ jobs:
             BASE_IMAGE=${{ steps.base.outputs.image }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:latest
-            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.BUILD_DATE }}
+            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.RELEASE_DATE }}
             ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:latest
-            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:${{ env.BUILD_DATE }}
+            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:${{ env.RELEASE_DATE }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
           push: true
       - name: Update README versions
         if: ${{ inputs.update_readme }}
         run: |
+          DATE_DASH=$(date -d "${{ env.RELEASE_DATE }}" +%Y-%m-%d)
           python3 .github/scripts/update_readme_versions.py \
             "./${{ matrix.template }}/README.md" \
-            "${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.BUILD_DATE }}" \
-            "$(date +%Y-%m-%d)"
+            "${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.RELEASE_DATE }}" \
+            "$DATE_DASH"
       - name: Commit README
         if: ${{ inputs.update_readme }}
         run: |
@@ -126,7 +141,7 @@ jobs:
             echo "No README changes."
           else
             git add "./${{ matrix.template }}/README.md"
-            git commit -m "docs: update ${{ matrix.template }} package versions (${{ env.BUILD_DATE }})"
+            git commit -m "docs: update ${{ matrix.template }} package versions (${{ env.RELEASE_DATE }})"
             git pull --rebase origin ${{ github.ref_name }}
             git push origin HEAD:${{ github.ref_name }}
           fi
