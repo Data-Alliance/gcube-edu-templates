@@ -31,7 +31,7 @@ chaeyoon08/edu-llm-train:latest
 
 ## 포함 환경
 
-**기준일:** 2026-06-19
+**기준일:** 2026-06-22
 
 아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
 
@@ -39,7 +39,7 @@ chaeyoon08/edu-llm-train:latest
 | 패키지 | 버전 |
 |---|---|
 | transformers | 5.12.1 |
-| tokenizers | (자동 입력) |
+| tokenizers | 0.22.2 |
 | datasets | 5.0.0 |
 | peft | 0.19.1 |
 | trl | 1.6.0 |
