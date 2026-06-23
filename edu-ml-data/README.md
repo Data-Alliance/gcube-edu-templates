@@ -38,10 +38,10 @@ chaeyoon08/edu-ml-data:latest
 <!-- VERSIONS:START -->
 | 패키지 | 버전 |
 |---|---|
-| NumPy | 2.4.6 |
+| NumPy | 2.5.0 |
 | pandas | 3.0.3 |
 | scikit-learn | 1.9.0 |
-| SciPy | 1.17.1 |
+| SciPy | 1.18.0 |
 | statsmodels | 0.14.6 |
 | Matplotlib | 3.11.0 |
 | seaborn | 0.13.2 |
