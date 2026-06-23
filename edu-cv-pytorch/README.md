@@ -45,7 +45,7 @@ chaeyoon08/edu-cv-pytorch:latest
 | albumentations | 2.0.8 |
 | Pillow | 12.1.1 |
 | scikit-learn | 1.9.0 |
-| SciPy | 1.17.1 |
+| SciPy | 1.18.0 |
 | Matplotlib | 3.11.0 |
 | tqdm | 4.68.3 |
 <!-- VERSIONS:END -->
