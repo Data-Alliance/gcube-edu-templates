@@ -40,7 +40,7 @@ chaeyoon08/edu-medical-monai:latest
 <!-- VERSIONS:START -->
 | 패키지 | 버전 |
 |---|---|
-| MONAI | 1.5.2 |
+| MONAI | 1.6.0 |
 | NiBabel | 5.4.2 |
 | pydicom | 3.0.2 |
 | SimpleITK | 2.5.5 |
