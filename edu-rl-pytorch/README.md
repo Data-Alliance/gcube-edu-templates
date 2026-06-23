@@ -39,7 +39,7 @@ chaeyoon08/edu-rl-pytorch:latest
 | 패키지 | 버전 |
 |---|---|
 | gymnasium | 1.3.0 |
-| stable-baselines3 | 2.9.0 |
+| stable-baselines3 | (미확인) |
 | tensorboard | 2.20.0 |
 | Matplotlib | 3.11.0 |
 | NumPy | 2.4.3 |
