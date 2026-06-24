@@ -16,7 +16,8 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 | 항목 | 값 |
 |---|---|
-| 이미지 | `chaeyoon08/edu-geo-gdal:latest` |
+| 이미지 (권장) | `public.ecr.aws/g3x5o1w3/gcube/edu/geo-gdal:latest` |
+| 이미지 (대안) | `ghcr.io/data-alliance/edu-geo-gdal:latest` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
@@ -26,12 +27,7 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 rasterio·GeoPandas는 GDAL이 포함된 바이너리 패키지로 설치되어, GeoTIFF·Shapefile 등 일반적인 지리공간 포맷을 별도 시스템 설치 없이 다룰 수 있습니다.
 
-이미지는 GitHub Container Registry에서도 받을 수 있습니다.
-
-```
-ghcr.io/data-alliance/edu-geo-gdal:latest
-chaeyoon08/edu-geo-gdal:latest
-```
+AWS ECR이 GitHub Container Registry보다 다운로드 속도가 빠르기 때문에 사용을 권장합니다.
 
 ## 포함 환경
 

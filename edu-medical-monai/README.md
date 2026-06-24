@@ -16,7 +16,8 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 | 항목 | 값 |
 |---|---|
-| 이미지 | `chaeyoon08/edu-medical-monai:latest` |
+| 이미지 (권장) | `public.ecr.aws/g3x5o1w3/gcube/edu/medical-monai:latest` |
+| 이미지 (대안) | `ghcr.io/data-alliance/edu-medical-monai:latest` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
@@ -24,12 +25,7 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 2D 의료영상 분류·분할은 VRAM 8GB 환경에서 학습할 수 있습니다. 3D CT·MRI 볼륨 분할은 더 큰 GPU 메모리가 필요하며, patch 크기 축소와 혼합 정밀도(AMP)로 메모리 사용을 조절합니다.
 
-이미지는 GitHub Container Registry에서도 받을 수 있습니다.
-
-```
-ghcr.io/data-alliance/edu-medical-monai:latest
-chaeyoon08/edu-medical-monai:latest
-```
+AWS ECR이 GitHub Container Registry보다 다운로드 속도가 빠르기 때문에 사용을 권장합니다.
 
 ## 포함 환경
 

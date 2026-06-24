@@ -17,7 +17,8 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 | 항목 | 값 |
 |---|---|
-| 이미지 | `chaeyoon08/edu-audio-pytorch:latest` |
+| 이미지 (권장) | `public.ecr.aws/g3x5o1w3/gcube/edu/audio-pytorch:latest` |
+| 이미지 (대안) | `ghcr.io/data-alliance/edu-audio-pytorch:latest` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
@@ -25,12 +26,7 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 Whisper는 모델 크기별로 GPU 메모리 요구가 다릅니다. VRAM 8GB 환경에서는 medium 이하 모델을 권장합니다.
 
-이미지는 GitHub Container Registry에서도 받을 수 있습니다.
-
-```
-ghcr.io/data-alliance/edu-audio-pytorch:latest
-chaeyoon08/edu-audio-pytorch:latest
-```
+AWS ECR이 GitHub Container Registry보다 다운로드 속도가 빠르기 때문에 사용을 권장합니다.
 
 ## 포함 환경
 

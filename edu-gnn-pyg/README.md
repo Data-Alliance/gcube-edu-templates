@@ -16,7 +16,8 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 | 항목 | 값 |
 |---|---|
-| 이미지 | `chaeyoon08/edu-gnn-pyg:latest` |
+| 이미지 (권장) | `public.ecr.aws/g3x5o1w3/gcube/edu/gnn-pyg:latest` |
+| 이미지 (대안) | `ghcr.io/data-alliance/edu-gnn-pyg:latest` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
@@ -24,12 +25,7 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 PyTorch Geometric 본체는 GCN, GAT, GraphSAGE 등 일반적인 그래프 신경망 실습을 지원합니다. 대규모 그래프 이웃 샘플링 등 일부 고급 기능에 필요한 컴파일 확장(pyg_lib, torch_scatter 등)은 포함하지 않으며, 필요한 경우 PyTorch·CUDA 버전에 맞는 wheel을 추가로 설치합니다.
 
-이미지는 GitHub Container Registry에서도 받을 수 있습니다.
-
-```
-ghcr.io/data-alliance/edu-gnn-pyg:latest
-chaeyoon08/edu-gnn-pyg:latest
-```
+AWS ECR이 GitHub Container Registry보다 다운로드 속도가 빠르기 때문에 사용을 권장합니다.
 
 ## 포함 환경
 

@@ -16,18 +16,14 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 | 항목 | 값 |
 |---|---|
-| 이미지 | `chaeyoon08/edu-ml-data:latest` |
+| 이미지 (권장) | `public.ecr.aws/g3x5o1w3/gcube/edu/ml-data:latest` |
+| 이미지 (대안) | `ghcr.io/data-alliance/edu-ml-data:latest` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
 배포 후 서비스 URL로 접속하면 JupyterLab이 열립니다.
 
-이미지는 GitHub Container Registry에서도 받을 수 있습니다.
-
-```
-ghcr.io/data-alliance/edu-ml-data:latest
-chaeyoon08/edu-ml-data:latest
-```
+AWS ECR이 GitHub Container Registry보다 다운로드 속도가 빠르기 때문에 사용을 권장합니다.
 
 ## 포함 환경
 
