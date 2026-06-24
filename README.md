@@ -26,33 +26,19 @@ gcube 워크로드 배포 시 이미지 주소만 바꿔서 사용합니다. 포
 
 AWS ECR이 GitHub Container Registry보다 다운로드 속도가 빠르기 때문에 사용을 권장합니다.
 
-```
-public.ecr.aws/g3x5o1w3/gcube/edu/dl-tensorflow:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/cv-pytorch:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/ml-data:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/nlp-hf:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/rl-pytorch:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/genai-sd:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/llm-train:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/audio-pytorch:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/medical-monai:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/geo-gdal:latest
-public.ecr.aws/g3x5o1w3/gcube/edu/gnn-pyg:latest
-```
-
-```
-ghcr.io/data-alliance/edu-dl-tensorflow:latest
-ghcr.io/data-alliance/edu-cv-pytorch:latest
-ghcr.io/data-alliance/edu-ml-data:latest
-ghcr.io/data-alliance/edu-nlp-hf:latest
-ghcr.io/data-alliance/edu-rl-pytorch:latest
-ghcr.io/data-alliance/edu-genai-sd:latest
-ghcr.io/data-alliance/edu-llm-train:latest
-ghcr.io/data-alliance/edu-audio-pytorch:latest
-ghcr.io/data-alliance/edu-medical-monai:latest
-ghcr.io/data-alliance/edu-geo-gdal:latest
-ghcr.io/data-alliance/edu-gnn-pyg:latest
-```
+| # | 이미지 | AWS ECR (권장) | GitHub Container Registry |
+|---|---|---|---|
+| 1 | edu-dl-tensorflow | `public.ecr.aws/g3x5o1w3/gcube/edu/dl-tensorflow:latest` | `ghcr.io/data-alliance/edu-dl-tensorflow:latest` |
+| 2 | edu-cv-pytorch | `public.ecr.aws/g3x5o1w3/gcube/edu/cv-pytorch:latest` | `ghcr.io/data-alliance/edu-cv-pytorch:latest` |
+| 3 | edu-ml-data | `public.ecr.aws/g3x5o1w3/gcube/edu/ml-data:latest` | `ghcr.io/data-alliance/edu-ml-data:latest` |
+| 4 | edu-nlp-hf | `public.ecr.aws/g3x5o1w3/gcube/edu/nlp-hf:latest` | `ghcr.io/data-alliance/edu-nlp-hf:latest` |
+| 5 | edu-rl-pytorch | `public.ecr.aws/g3x5o1w3/gcube/edu/rl-pytorch:latest` | `ghcr.io/data-alliance/edu-rl-pytorch:latest` |
+| 6 | edu-genai-sd | `public.ecr.aws/g3x5o1w3/gcube/edu/genai-sd:latest` | `ghcr.io/data-alliance/edu-genai-sd:latest` |
+| 7 | edu-llm-train | `public.ecr.aws/g3x5o1w3/gcube/edu/llm-train:latest` | `ghcr.io/data-alliance/edu-llm-train:latest` |
+| 8 | edu-audio-pytorch | `public.ecr.aws/g3x5o1w3/gcube/edu/audio-pytorch:latest` | `ghcr.io/data-alliance/edu-audio-pytorch:latest` |
+| 9 | edu-medical-monai | `public.ecr.aws/g3x5o1w3/gcube/edu/medical-monai:latest` | `ghcr.io/data-alliance/edu-medical-monai:latest` |
+| 10 | edu-geo-gdal | `public.ecr.aws/g3x5o1w3/gcube/edu/geo-gdal:latest` | `ghcr.io/data-alliance/edu-geo-gdal:latest` |
+| 11 | edu-gnn-pyg | `public.ecr.aws/g3x5o1w3/gcube/edu/gnn-pyg:latest` | `ghcr.io/data-alliance/edu-gnn-pyg:latest` |
 
 ## 환경변수
 
