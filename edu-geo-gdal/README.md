@@ -7,6 +7,7 @@ PyTorch 기반 지리공간·원격탐사 교육용 이미지. `gcube-pytorch` �
 | 항목 | 내용 |
 |---|---|
 | 기반 | `gcube-pytorch-2.11-cuda13.0` (PyTorch, torchvision, torchaudio 포함) |
+| 기반 (CUDA 12.8) | `gcube-pytorch-2.11-cuda12.8` (위와 동일 구성) |
 | 작업 디렉터리 | `/workspace` |
 | 포트 | 8888 |
 
@@ -16,11 +17,14 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 | 항목 | 값 |
 |---|---|
-| 이미지 | `ghcr.io/data-alliance/edu-geo-gdal:latest` |
+| 이미지 | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda13.0` (`latest`와 동일) |
+| 이미지 (CUDA 12.8) | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda12.8` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
 배포 후 서비스 URL로 접속하면 JupyterLab이 열립니다.
+
+노드의 NVIDIA 드라이버 버전에 맞는 이미지를 사용합니다. CUDA 13.0 이미지는 드라이버 580 이상, CUDA 12.8 이미지는 드라이버 570 이상이 필요합니다.
 
 위성영상 분류·분할은 타일 또는 patch 단위로 처리하면 VRAM 8GB 환경에서 학습할 수 있습니다. 대형 영상은 타일로 분할해 사용하는 것을 권장합니다.
 
@@ -28,11 +32,15 @@ rasterio·GeoPandas는 GDAL이 포함된 바이너리 패키지로 설치되어,
 
 ## 포함 환경
 
+패키지 버전은 이 폴더의 `requirements.txt`로 고정되어 있습니다. 태그별 기준일과 버전은 아래와 같습니다.
+
+### `torch2.11-cuda13.0`
+
 **기준일:** 2026-06-19
 
 아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
 
-<!-- VERSIONS:START -->
+<!-- VERSIONS:torch2.11-cuda13.0:START -->
 | 패키지 | 버전 |
 |---|---|
 | rasterio | 1.5.0 |
@@ -43,7 +51,7 @@ rasterio·GeoPandas는 GDAL이 포함된 바이너리 패키지로 설치되어,
 | Matplotlib | 3.11.0 |
 | tqdm | 4.68.3 |
 | ipywidgets | 8.1.8 |
-<!-- VERSIONS:END -->
+<!-- VERSIONS:torch2.11-cuda13.0:END -->
 
 ## 환경변수
 

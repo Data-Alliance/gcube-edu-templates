@@ -24,19 +24,21 @@ gcube GPU 플랫폼용 교육용 컨테이너 이미지 템플릿 모음입니�
 
 gcube 워크로드 배포 시 이미지 주소만 바꿔서 사용합니다. 포트는 모두 `8888`(JupyterLab 자동 실행), 작업 디렉터리는 `/workspace`로 동일합니다.
 
-| # | 이미지 | 주소 |
-|---|---|---|
-| 1 | edu-dl-tensorflow | `ghcr.io/data-alliance/edu-dl-tensorflow:latest` |
-| 2 | edu-cv-pytorch | `ghcr.io/data-alliance/edu-cv-pytorch:latest` |
-| 3 | edu-ml-data | `ghcr.io/data-alliance/edu-ml-data:latest` |
-| 4 | edu-nlp-hf | `ghcr.io/data-alliance/edu-nlp-hf:latest` |
-| 5 | edu-rl-pytorch | `ghcr.io/data-alliance/edu-rl-pytorch:latest` |
-| 6 | edu-genai-sd | `ghcr.io/data-alliance/edu-genai-sd:latest` |
-| 7 | edu-llm-train | `ghcr.io/data-alliance/edu-llm-train:latest` |
-| 8 | edu-audio-pytorch | `ghcr.io/data-alliance/edu-audio-pytorch:latest` |
-| 9 | edu-medical-monai | `ghcr.io/data-alliance/edu-medical-monai:latest` |
-| 10 | edu-geo-gdal | `ghcr.io/data-alliance/edu-geo-gdal:latest` |
-| 11 | edu-gnn-pyg | `ghcr.io/data-alliance/edu-gnn-pyg:latest` |
+| # | 이미지 | 주소 | 주소 (CUDA 12.8) |
+|---|---|---|---|
+| 1 | edu-dl-tensorflow | `ghcr.io/data-alliance/edu-dl-tensorflow:tf2.17-cuda12.8` | (왼쪽과 동일) |
+| 2 | edu-cv-pytorch | `ghcr.io/data-alliance/edu-cv-pytorch:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-cv-pytorch:torch2.11-cuda12.8` |
+| 3 | edu-ml-data | `ghcr.io/data-alliance/edu-ml-data:cuda13.0` | `ghcr.io/data-alliance/edu-ml-data:cuda12.8` |
+| 4 | edu-nlp-hf | `ghcr.io/data-alliance/edu-nlp-hf:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-nlp-hf:torch2.11-cuda12.8` |
+| 5 | edu-rl-pytorch | `ghcr.io/data-alliance/edu-rl-pytorch:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-rl-pytorch:torch2.11-cuda12.8` |
+| 6 | edu-genai-sd | `ghcr.io/data-alliance/edu-genai-sd:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-genai-sd:torch2.11-cuda12.8` |
+| 7 | edu-llm-train | `ghcr.io/data-alliance/edu-llm-train:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-llm-train:torch2.11-cuda12.8` |
+| 8 | edu-audio-pytorch | `ghcr.io/data-alliance/edu-audio-pytorch:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-audio-pytorch:torch2.11-cuda12.8` |
+| 9 | edu-medical-monai | `ghcr.io/data-alliance/edu-medical-monai:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-medical-monai:torch2.11-cuda12.8` |
+| 10 | edu-geo-gdal | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda12.8` |
+| 11 | edu-gnn-pyg | `ghcr.io/data-alliance/edu-gnn-pyg:torch2.11-cuda13.0` | `ghcr.io/data-alliance/edu-gnn-pyg:torch2.11-cuda12.8` |
+
+노드의 NVIDIA 드라이버 버전에 맞는 주소를 사용합니다. `주소` 열은 CUDA 13.0(드라이버 580 이상, `edu-dl-tensorflow`만 CUDA 12.8)이며 `latest`와 동일하고, `주소 (CUDA 12.8)` 열은 드라이버 570 이상에서 사용합니다. 태그별 패키지 버전은 각 템플릿 폴더의 README를 참고하세요.
 
 ## 환경변수
 

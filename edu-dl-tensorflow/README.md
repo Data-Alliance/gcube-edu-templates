@@ -16,19 +16,25 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 
 | 항목 | 값 |
 |---|---|
-| 이미지 | `ghcr.io/data-alliance/edu-dl-tensorflow:latest` |
+| 이미지 | `ghcr.io/data-alliance/edu-dl-tensorflow:tf2.17-cuda12.8` (`latest`와 동일) |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
 배포 후 서비스 URL로 접속하면 JupyterLab이 열립니다.
 
+CUDA 12.8 기반 이미지로, NVIDIA 드라이버 570 이상이 필요합니다.
+
 ## 포함 환경
+
+패키지 버전은 이 폴더의 `requirements.txt`로 고정되어 있습니다. 태그별 기준일과 버전은 아래와 같습니다.
+
+### `tf2.17-cuda12.8`
 
 **기준일:** 2026-06-19
 
 아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
 
-<!-- VERSIONS:START -->
+<!-- VERSIONS:tf2.17-cuda12.8:START -->
 | 패키지 | 버전 |
 |---|---|
 | TensorFlow | 2.17.0+nv25.2 |
@@ -39,7 +45,7 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 | Matplotlib | 3.11.0 |
 | NumPy | 1.26.4 |
 | tqdm | 4.67.1 |
-<!-- VERSIONS:END -->
+<!-- VERSIONS:tf2.17-cuda12.8:END -->
 
 ## 환경변수
 

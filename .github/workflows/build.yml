@@ -1,8 +1,24 @@
 name: build gcube-edu-templates
 
+# Image tags (no date tags; the update date lives in each template README):
+#   PyTorch templates : torch<torch>-cuda<cuda>   e.g. edu-cv-pytorch:torch2.11-cuda12.8
+#   edu-ml-data       : cuda<cuda>                e.g. edu-ml-data:cuda12.8
+#   edu-dl-tensorflow : tf2.17-cuda12.8           (only combination available)
+#   latest            : the combination matching LATEST_TORCH / LATEST_CUDA below
+#
+# Modes:
+#   test    : build from any branch, verify, push to ghcr.io/<owner>/edu-test-<template>:<tag> only.
+#             Official images, Docker Hub and READMEs are untouched.
+#   release : run from main after the test image is verified. Copies the tested image as-is
+#             (no rebuild) to the official GHCR / Docker Hub names, applies `latest`, updates README.
+
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        type: choice
+        options: [test, release]
+        default: test
       template:
         type: choice
         options:
@@ -19,28 +35,46 @@ on:
           - edu-geo-gdal
           - edu-gnn-pyg
         default: edu-cv-pytorch
+      torch:
+        type: choice
+        description: 'PyTorch version (PyTorch templates only)'
+        options: ["2.11"]
+        default: "2.11"
+      cuda:
+        type: choice
+        description: 'CUDA version (edu-dl-tensorflow supports 12.8 only)'
+        options: ["13.0", "12.8"]
+        default: "13.0"
       release_date:
         type: string
-        description: 'Release date tag (YYYYMMDD). Verified/confirmed provision date, not build date.'
-        default: "20260619"
+        description: 'release only: README 기준일 (YYYYMMDD). Verified/confirmed provision date. Not used as an image tag.'
+        default: ""
       update_readme:
         type: boolean
-        description: 'Update README package versions after build'
+        description: 'release only: update README package versions'
         default: true
 
 env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
   DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+  # Combination that receives the `latest` tag on release. Move these when a newer combination becomes the default.
+  LATEST_TORCH: "2.11"
+  LATEST_CUDA: "13.0"
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      templates: ${{ steps.set.outputs.templates }}
+      matrix: ${{ steps.set.outputs.matrix }}
     steps:
       - id: validate
+        if: ${{ inputs.mode == 'release' }}
         run: |
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "ERROR: release must run from main (current: ${{ github.ref }})"
+            exit 1
+          fi
           if ! echo "${{ inputs.release_date }}" | grep -qE '^[0-9]{8}$'; then
             echo "ERROR: release_date must be 8 digits (YYYYMMDD): ${{ inputs.release_date }}"
             exit 1
@@ -50,12 +84,43 @@ jobs:
             exit 1
           fi
       - id: set
+        env:
+          IN_TEMPLATE: ${{ inputs.template }}
+          IN_TORCH: ${{ inputs.torch }}
+          IN_CUDA: ${{ inputs.cuda }}
         run: |
-          if [ "${{ inputs.template }}" = "all" ]; then
-            echo 'templates=["edu-dl-tensorflow","edu-cv-pytorch","edu-ml-data","edu-nlp-hf","edu-rl-pytorch","edu-genai-sd","edu-llm-train","edu-audio-pytorch","edu-medical-monai","edu-geo-gdal","edu-gnn-pyg"]' >> $GITHUB_OUTPUT
-          else
-            echo 'templates=["${{ inputs.template }}"]' >> $GITHUB_OUTPUT
-          fi
+          python3 - >> "$GITHUB_OUTPUT" << 'PY'
+          import json, os, sys
+          tpl, torch, cuda = os.environ["IN_TEMPLATE"], os.environ["IN_TORCH"], os.environ["IN_CUDA"]
+          latest_torch, latest_cuda = os.environ["LATEST_TORCH"], os.environ["LATEST_CUDA"]
+          PYTORCH = ["edu-cv-pytorch", "edu-nlp-hf", "edu-rl-pytorch", "edu-genai-sd", "edu-llm-train",
+                     "edu-audio-pytorch", "edu-medical-monai", "edu-geo-gdal", "edu-gnn-pyg"]
+          ALL = ["edu-dl-tensorflow", "edu-ml-data"] + PYTORCH
+          names = ALL if tpl == "all" else [tpl]
+          matrix = []
+          for t in names:
+              if t in PYTORCH:
+                  matrix.append({"template": t, "kind": "pytorch", "cuda": cuda,
+                                 "base": f"gcube-pytorch-{torch}-cuda{cuda}:runtime",
+                                 "tag": f"torch{torch}-cuda{cuda}",
+                                 "latest": torch == latest_torch and cuda == latest_cuda})
+              elif t == "edu-ml-data":
+                  matrix.append({"template": t, "kind": "cuda", "cuda": cuda,
+                                 "base": f"gcube-ubuntu24.04-cuda{cuda}:runtime",
+                                 "tag": f"cuda{cuda}", "latest": cuda == latest_cuda})
+              elif t == "edu-dl-tensorflow":
+                  if cuda != "12.8":
+                      if tpl == "all":
+                          print(f"skip {t}: only cuda 12.8 is available", file=sys.stderr)
+                          continue
+                      sys.exit(f"ERROR: {t} supports cuda 12.8 only (requested {cuda})")
+                  matrix.append({"template": t, "kind": "cuda", "cuda": "12.8",
+                                 "base": "gcube-tensorflow-2.17-cuda12.8:runtime",
+                                 "tag": "tf2.17-cuda12.8", "latest": True})
+              else:
+                  sys.exit(f"ERROR: unknown template {t}")
+          print("matrix=" + json.dumps(matrix))
+          PY
 
   build:
     needs: prepare
@@ -64,7 +129,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        template: ${{ fromJson(needs.prepare.outputs.templates) }}
+        include: ${{ fromJson(needs.prepare.outputs.matrix) }}
     permissions:
       contents: write
       packages: write
@@ -74,66 +139,102 @@ jobs:
         run: |
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
           df -h /
-      - name: Set lowercase owner
-        run: echo "OWNER_LC=${OWNER,,}" >> $GITHUB_ENV
+      - name: Set image names
+        run: |
+          OWNER_LC="${OWNER,,}"
+          T="${{ matrix.template }}"
+          echo "OWNER_LC=$OWNER_LC" >> $GITHUB_ENV
+          echo "BASE_IMAGE=${REGISTRY}/${OWNER_LC}/${{ matrix.base }}" >> $GITHUB_ENV
+          # edu-cv-pytorch -> edu-test-cv-pytorch (separate package, deleted after release)
+          echo "TEST_IMAGE=${REGISTRY}/${OWNER_LC}/edu-test-${T#edu-}:${{ matrix.tag }}" >> $GITHUB_ENV
         env:
           OWNER: ${{ github.repository_owner }}
-      - name: Set release date
-        run: echo "RELEASE_DATE=${{ inputs.release_date }}" >> $GITHUB_ENV
-      - name: Resolve base image
-        id: base
-        run: |
-          case "${{ matrix.template }}" in
-            edu-dl-tensorflow)
-              echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-tensorflow-2.17-cuda12.8:runtime" >> $GITHUB_OUTPUT
-              ;;
-            edu-ml-data)
-              echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-ubuntu24.04-cuda13.0:runtime" >> $GITHUB_OUTPUT
-              ;;
-            edu-cv-pytorch|edu-nlp-hf|edu-rl-pytorch|edu-genai-sd|edu-llm-train|edu-audio-pytorch|edu-medical-monai|edu-geo-gdal|edu-gnn-pyg)
-              echo "image=ghcr.io/${{ env.OWNER_LC }}/gcube-pytorch-2.11-cuda13.0:runtime" >> $GITHUB_OUTPUT
-              ;;
-            *)
-              echo "Unknown template: ${{ matrix.template }}" && exit 1
-              ;;
-          esac
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+
+      # ---------- test ----------
+      - name: Check base image exists
+        if: ${{ inputs.mode == 'test' }}
+        run: |
+          if ! docker manifest inspect "$BASE_IMAGE" >/dev/null; then
+            echo "ERROR: base image not found: $BASE_IMAGE (build it in gcube-base-images first)"
+            exit 1
+          fi
+      - name: Build
+        if: ${{ inputs.mode == 'test' }}
         uses: docker/build-push-action@v6
         with:
           context: ./${{ matrix.template }}
           file: ./${{ matrix.template }}/Dockerfile
           load: true
+          push: false
           build-args: |
-            BASE_IMAGE=${{ steps.base.outputs.image }}
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:latest
-            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.RELEASE_DATE }}
-            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:latest
-            ${{ env.DOCKERHUB_OWNER }}/${{ matrix.template }}:${{ env.RELEASE_DATE }}
+            BASE_IMAGE=${{ env.BASE_IMAGE }}
+          tags: ${{ env.TEST_IMAGE }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
-          push: true
-      - name: Update README versions
-        if: ${{ inputs.update_readme }}
+
+      # ---------- release ----------
+      - name: Pull tested image
+        if: ${{ inputs.mode == 'release' }}
         run: |
-          DATE_DASH=$(date -d "${{ env.RELEASE_DATE }}" +%Y-%m-%d)
+          if ! docker pull "$TEST_IMAGE"; then
+            echo "ERROR: tested image not found: $TEST_IMAGE (run mode=test first and verify it)"
+            exit 1
+          fi
+
+      # ---------- both ----------
+      - name: Verify CUDA version
+        run: |
+          EXPECT="${{ matrix.cuda }}"
+          if [ "${{ matrix.kind }}" = "pytorch" ]; then
+            ACTUAL=$(docker run --rm --entrypoint python "$TEST_IMAGE" -c "import torch; print(torch.version.cuda)")
+            echo "torch: $(docker run --rm --entrypoint python "$TEST_IMAGE" -c 'import torch; print(torch.__version__)')"
+          else
+            ACTUAL=$(docker run --rm --entrypoint sh "$TEST_IMAGE" -c 'echo "${CUDA_VERSION%.*}"')
+          fi
+          echo "expected CUDA $EXPECT, image reports $ACTUAL"
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "ERROR: CUDA version mismatch (torch may have been replaced during pip install)"
+            exit 1
+          fi
+
+      - name: Push test image
+        if: ${{ inputs.mode == 'test' }}
+        run: docker push "$TEST_IMAGE"
+
+      - name: Log in to Docker Hub
+        if: ${{ inputs.mode == 'release' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push official image
+        if: ${{ inputs.mode == 'release' }}
+        run: |
+          TAGS="${{ matrix.tag }}"
+          if [ "${{ matrix.latest }}" = "true" ]; then TAGS="$TAGS latest"; fi
+          for t in $TAGS; do
+            for dst in "${REGISTRY}/${OWNER_LC}/${{ matrix.template }}:$t" "${DOCKERHUB_OWNER}/${{ matrix.template }}:$t"; do
+              docker tag "$TEST_IMAGE" "$dst"
+              docker push "$dst"
+            done
+          done
+      - name: Update README versions
+        if: ${{ inputs.mode == 'release' && inputs.update_readme }}
+        run: |
+          DATE_DASH=$(date -d "${{ inputs.release_date }}" +%Y-%m-%d)
           python3 .github/scripts/update_readme_versions.py \
             "./${{ matrix.template }}/README.md" \
-            "${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ matrix.template }}:${{ env.RELEASE_DATE }}" \
+            "$TEST_IMAGE" \
+            "${{ matrix.tag }}" \
             "$DATE_DASH"
       - name: Commit README
-        if: ${{ inputs.update_readme }}
+        if: ${{ inputs.mode == 'release' && inputs.update_readme }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -141,7 +242,7 @@ jobs:
             echo "No README changes."
           else
             git add "./${{ matrix.template }}/README.md"
-            git commit -m "docs: update ${{ matrix.template }} package versions (${{ env.RELEASE_DATE }})"
+            git commit -m "docs: update ${{ matrix.template }} package versions (${{ matrix.tag }}, ${{ inputs.release_date }})"
             git pull --rebase origin ${{ github.ref_name }}
             git push origin HEAD:${{ github.ref_name }}
           fi
