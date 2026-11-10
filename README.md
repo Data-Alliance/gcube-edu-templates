@@ -40,6 +40,8 @@ gcube 워크로드 배포 시 이미지 주소만 바꿔서 사용합니다. 포
 
 노드의 NVIDIA 드라이버 버전에 맞는 주소를 사용합니다. `주소` 열은 CUDA 13.0(드라이버 580 이상, `edu-dl-tensorflow`만 CUDA 12.8)이며 `latest`와 동일하고, `주소 (CUDA 12.8)` 열은 드라이버 570 이상에서 사용합니다. `edu-ml-data`는 베이스가 Ubuntu 버전별로 제공되어 태그에 Ubuntu 버전도 표시합니다. 태그별 패키지 버전은 각 템플릿 폴더의 README를 참고하세요.
 
+같은 이미지가 Docker Hub [`gcubeai`](https://hub.docker.com/u/gcubeai)에도 같은 이름·태그로 있습니다. 위 주소에서 `ghcr.io/data-alliance/`를 `gcubeai/`로 바꿔 사용합니다. 예: `gcubeai/edu-cv-pytorch:torch2.11-cuda12.8`
+
 ## 환경변수
 
 모든 환경변수는 선택 사항입니다. 비공개 저장소를 사용하거나 커밋 작성자를 지정하려는 경우에만 입력합니다.

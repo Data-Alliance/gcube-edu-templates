@@ -17,6 +17,7 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 | 항목 | 값 |
 |---|---|
 | 이미지 | `ghcr.io/data-alliance/edu-dl-tensorflow:tf2.17-cuda12.8` (`latest`와 동일) |
+| 이미지 (Docker Hub) | `gcubeai/edu-dl-tensorflow:<위와 같은 태그>` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 

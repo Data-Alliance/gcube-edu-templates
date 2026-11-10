@@ -19,6 +19,7 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 |---|---|
 | 이미지 | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda13.0` (`latest`와 동일) |
 | 이미지 (CUDA 12.8) | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda12.8` |
+| 이미지 (Docker Hub) | `gcubeai/edu-geo-gdal:<위와 같은 태그>` |
 | 포트 | 8888 |
 | GPU | VRAM 8GB 이상 |
 
