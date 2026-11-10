@@ -11,7 +11,8 @@ name: build gcube-edu-templates
 #   test    : build from any branch, verify, push to ghcr.io/<owner>/edu-test-<template>:<tag> only.
 #             Official images, Docker Hub and READMEs are untouched.
 #   release : run from main after the test image is verified. Copies the tested image as-is
-#             (no rebuild) to the official GHCR / Docker Hub names, applies `latest`, updates README.
+#             (no rebuild) to the official GHCR / Docker Hub (personal + gcubeai org) names,
+#             applies `latest`, updates README.
 
 on:
   workflow_dispatch:
@@ -59,6 +60,8 @@ env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
   DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
+  # Company Docker Hub organization; logs in with an organization access token (DOCKERHUB_ORG_TOKEN).
+  DOCKERHUB_ORG: gcubeai
   # Combination that receives the `latest` tag on release. Move these when a newer combination becomes the default.
   LATEST_TORCH: "2.11"
   LATEST_CUDA: "13.0"
@@ -229,6 +232,22 @@ jobs:
               docker tag "$TEST_IMAGE" "$dst"
               docker push "$dst"
             done
+          done
+      # Docker Hub keeps one login per registry, so log in again with the organization token.
+      - name: Log in to Docker Hub organization
+        if: ${{ inputs.mode == 'release' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_ORG }}
+          password: ${{ secrets.DOCKERHUB_ORG_TOKEN }}
+      - name: Push to Docker Hub organization
+        if: ${{ inputs.mode == 'release' }}
+        run: |
+          TAGS="${{ matrix.tag }}"
+          if [ "${{ matrix.latest }}" = "true" ]; then TAGS="$TAGS latest"; fi
+          for t in $TAGS; do
+            docker tag "$TEST_IMAGE" "${DOCKERHUB_ORG}/${{ matrix.template }}:$t"
+            docker push "${DOCKERHUB_ORG}/${{ matrix.template }}:$t"
           done
       - name: Update README versions
         if: ${{ inputs.mode == 'release' && inputs.update_readme }}
