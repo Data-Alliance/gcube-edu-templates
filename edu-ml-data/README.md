@@ -54,6 +54,28 @@ gcube 워크로드 배포 시 아래 설정으로 사용합니다.
 | ipywidgets | 8.1.8 |
 <!-- VERSIONS:ubuntu24.04-cuda13.0:END -->
 
+### `ubuntu24.04-cuda12.8`
+
+**기준일:** 2026-11-10
+
+아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
+
+<!-- VERSIONS:ubuntu24.04-cuda12.8:START -->
+| 패키지 | 버전 |
+|---|---|
+| NumPy | 2.5.0 |
+| pandas | 3.0.3 |
+| scikit-learn | 1.9.0 |
+| SciPy | 1.18.0 |
+| statsmodels | 0.14.6 |
+| Matplotlib | 3.11.0 |
+| seaborn | 0.13.2 |
+| Plotly | 6.8.0 |
+| openpyxl | 3.1.5 |
+| tqdm | 4.68.3 |
+| ipywidgets | 8.1.8 |
+<!-- VERSIONS:ubuntu24.04-cuda12.8:END -->
+
 ## 환경변수
 
 모든 환경변수는 선택 사항입니다. 비공개 저장소를 사용하거나 커밋 작성자를 지정하려는 경우에만 입력합니다.
