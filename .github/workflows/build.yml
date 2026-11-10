@@ -2,7 +2,8 @@ name: build gcube-edu-templates
 
 # Image tags (no date tags; the update date lives in each template README):
 #   PyTorch templates : torch<torch>-cuda<cuda>   e.g. edu-cv-pytorch:torch2.11-cuda12.8
-#   edu-ml-data       : cuda<cuda>                e.g. edu-ml-data:cuda12.8
+#   edu-ml-data       : ubuntu<ubuntu>-cuda<cuda> e.g. edu-ml-data:ubuntu24.04-cuda12.8
+#                       (only this template carries the Ubuntu version: its base is offered per Ubuntu version)
 #   edu-dl-tensorflow : tf2.17-cuda12.8           (only combination available)
 #   latest            : the combination matching LATEST_TORCH / LATEST_CUDA below
 #
@@ -107,7 +108,7 @@ jobs:
               elif t == "edu-ml-data":
                   matrix.append({"template": t, "kind": "cuda", "cuda": cuda,
                                  "base": f"gcube-ubuntu24.04-cuda{cuda}:runtime",
-                                 "tag": f"cuda{cuda}", "latest": cuda == latest_cuda})
+                                 "tag": f"ubuntu24.04-cuda{cuda}", "latest": cuda == latest_cuda})
               elif t == "edu-dl-tensorflow":
                   if cuda != "12.8":
                       if tpl == "all":
@@ -188,8 +189,13 @@ jobs:
           fi
 
       # ---------- both ----------
-      - name: Verify CUDA version
+      - name: Verify image (CUDA version, Korean font)
         run: |
+          if ! docker run --rm --entrypoint sh "$TEST_IMAGE" -c 'fc-list | grep -qi NanumGothic'; then
+            echo "ERROR: NanumGothic font not found (rebuild the base image in gcube-base-images)"
+            exit 1
+          fi
+          echo "font: NanumGothic OK"
           EXPECT="${{ matrix.cuda }}"
           if [ "${{ matrix.kind }}" = "pytorch" ]; then
             ACTUAL=$(docker run --rm --entrypoint python "$TEST_IMAGE" -c "import torch; print(torch.version.cuda)")
