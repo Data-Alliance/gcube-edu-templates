@@ -1,5 +1,5 @@
 # edu-medical-monai 패키지 버전 고정
-# 예제 노트북(gcube-edu-examples)을 검증한 2026-06-19 빌드 이미지의 설치 버전 기준입니다.
+# 2026-06-19 태그 이미지(2026-06-24 재빌드본)의 설치 버전 기준이며, 예제 노트북(gcube-edu-examples)은 이 버전으로 검증합니다.
 # 버전을 올릴 때는 이 파일을 수정하고 예제 노트북을 다시 확인합니다.
 # torch, torchvision, torchaudio, triton은 베이스 이미지에서 제공되며 Dockerfile에서 별도로 고정합니다.
 
