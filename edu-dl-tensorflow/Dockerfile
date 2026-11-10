@@ -3,15 +3,9 @@ FROM ${BASE_IMAGE}
 
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
-RUN pip install --no-cache-dir \
-        jupyterlab \
-        ipywidgets \
-        scipy \
-        scikit-learn \
-        matplotlib \
-        pillow \
-        tqdm \
-        "numpy<2"
+# Package versions are pinned in requirements.txt (see the comment at its top).
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 RUN rm -rf ~/.cache/matplotlib && python -c "import matplotlib.font_manager"
 
