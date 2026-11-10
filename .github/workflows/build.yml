@@ -11,7 +11,7 @@ name: build gcube-edu-templates
 #   test    : build from any branch, verify, push to ghcr.io/<owner>/edu-test-<template>:<tag> only.
 #             Official images, Docker Hub and READMEs are untouched.
 #   release : run from main after the test image is verified. Copies the tested image as-is
-#             (no rebuild) to the official GHCR / Docker Hub (personal + gcubeai org) names,
+#             (no rebuild) to the official GHCR / Docker Hub (gcubeai org) names,
 #             applies `latest`, updates README.
 
 on:
@@ -59,7 +59,6 @@ on:
 env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
-  DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
   # Company Docker Hub organization; logs in with an organization access token (DOCKERHUB_ORG_TOKEN).
   DOCKERHUB_ORG: gcubeai
   # Combination that receives the `latest` tag on release. Move these when a newer combination becomes the default.
@@ -216,24 +215,15 @@ jobs:
         if: ${{ inputs.mode == 'test' }}
         run: docker push "$TEST_IMAGE"
 
-      - name: Log in to Docker Hub
-        if: ${{ inputs.mode == 'release' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Push official image
+      - name: Push to GHCR
         if: ${{ inputs.mode == 'release' }}
         run: |
           TAGS="${{ matrix.tag }}"
           if [ "${{ matrix.latest }}" = "true" ]; then TAGS="$TAGS latest"; fi
           for t in $TAGS; do
-            for dst in "${REGISTRY}/${OWNER_LC}/${{ matrix.template }}:$t" "${DOCKERHUB_OWNER}/${{ matrix.template }}:$t"; do
-              docker tag "$TEST_IMAGE" "$dst"
-              docker push "$dst"
-            done
+            docker tag "$TEST_IMAGE" "${REGISTRY}/${OWNER_LC}/${{ matrix.template }}:$t"
+            docker push "${REGISTRY}/${OWNER_LC}/${{ matrix.template }}:$t"
           done
-      # Docker Hub keeps one login per registry, so log in again with the organization token.
       - name: Log in to Docker Hub organization
         if: ${{ inputs.mode == 'release' }}
         uses: docker/login-action@v3
