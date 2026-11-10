@@ -51,6 +51,24 @@ Whisper는 모델 크기별로 GPU 메모리 요구가 다릅니다. VRAM 8GB �
 | ipywidgets | 8.1.8 |
 <!-- VERSIONS:torch2.11-cuda13.0:END -->
 
+### `torch2.11-cuda12.8`
+
+**기준일:** 2026-11-10
+
+아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
+
+<!-- VERSIONS:torch2.11-cuda12.8:START -->
+| 패키지 | 버전 |
+|---|---|
+| torchaudio | 2.11.0+cu128 |
+| librosa | 0.11.0 |
+| soundfile | 0.14.0 |
+| openai-whisper | 20250625 |
+| Matplotlib | 3.11.0 |
+| tqdm | 4.68.3 |
+| ipywidgets | 8.1.8 |
+<!-- VERSIONS:torch2.11-cuda12.8:END -->
+
 ## 환경변수
 
 모든 환경변수는 선택 사항입니다. 비공개 저장소를 사용하거나 커밋 작성자를 지정하려는 경우에만 입력합니다.
