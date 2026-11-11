@@ -67,19 +67,24 @@ out = subprocess.run(
     ["docker", "run", "--rm", "--entrypoint", "pip", image, "show", *pkgs],
     capture_output=True, text=True,
 )
+def norm(name):
+    # pip treats "-", "_" and "." the same (e.g. stable-baselines3 == stable_baselines3)
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
 versions, cur = {}, None
 for line in out.stdout.splitlines():
     if line.startswith("Name:"):
         cur = line.split(":", 1)[1].strip()
     elif line.startswith("Version:") and cur:
-        versions[cur.lower()] = line.split(":", 1)[1].strip()
+        versions[norm(cur)] = line.split(":", 1)[1].strip()
         cur = None
 
 # Keep the table header language of this README (e.g. "패키지 | 버전" or "Package | Version").
 header = next((l.strip() for l in source.group("table").splitlines() if l.strip().startswith("|")), "| 패키지 | 버전 |")
 rows, missing = [header, "|---|---|"], []
 for p in pkgs:
-    v = versions.get(p.lower())
+    v = versions.get(norm(p))
     if v is None:
         missing.append(p)
         v = "(미확인)"
