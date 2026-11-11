@@ -1,48 +1,51 @@
 # edu-geo-gdal
 
-PyTorch 기반 지리공간·원격탐사 교육용 이미지. `gcube-pytorch` 베이스에 JupyterLab과 GDAL 기반 지리공간 처리 스택을 포함합니다. 위성영상 분류·분할, 래스터·벡터 데이터 처리, 원격탐사 등 지리공간 수업에 사용합니다.
+**English** | [한국어](README.ko.md)
 
-## 구성
+PyTorch-based image for geospatial and remote sensing courses. It adds JupyterLab and a GDAL-based geospatial stack on top of the `gcube-pytorch` base image. Use it for geospatial courses on satellite image classification/segmentation, raster and vector data processing, remote sensing, and more.
 
-| 항목 | 내용 |
+## Contents
+
+| Item | Value |
 |---|---|
-| 기반 | `gcube-pytorch-2.11-cuda13.0` (PyTorch, torchvision, torchaudio 포함) |
-| 기반 (CUDA 12.8) | `gcube-pytorch-2.11-cuda12.8` (위와 동일 구성) |
-| 작업 디렉터리 | `/workspace` |
-| 포트 | 8888 |
+| Base | `gcube-pytorch-2.11-cuda13.0` (includes PyTorch, torchvision, torchaudio) |
+| Base (CUDA 12.8) | `gcube-pytorch-2.11-cuda12.8` (same contents as above) |
+| Working directory | `/workspace` |
+| Port | 8888 |
 
-## 사용
+## Usage
 
-gcube 워크로드 배포 시 아래 설정으로 사용합니다.
+Use these settings when deploying a gcube workload.
 
-| 항목 | 값 |
+| Item | Value |
 |---|---|
-| 이미지 | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda13.0` (`latest`와 동일) |
-| 이미지 (CUDA 12.8) | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda12.8` |
-| 이미지 (Docker Hub) | `gcubeai/edu-geo-gdal:<위와 같은 태그>` |
-| 포트 | 8888 |
-| GPU | VRAM 8GB 이상 |
+| Image | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda13.0` (same as `latest`) |
+| Image (CUDA 12.8) | `ghcr.io/data-alliance/edu-geo-gdal:torch2.11-cuda12.8` |
+| Image (Docker Hub) | `gcubeai/edu-geo-gdal:torch2.11-cuda13.0` (same as `latest`) |
+| Image (Docker Hub, CUDA 12.8) | `gcubeai/edu-geo-gdal:torch2.11-cuda12.8` |
+| Port | 8888 |
+| GPU | 8 GB+ VRAM |
 
-배포 후 서비스 URL로 접속하면 JupyterLab이 열립니다.
+After deployment, open the service URL to access JupyterLab.
 
-노드의 NVIDIA 드라이버 버전에 맞는 이미지를 사용합니다. CUDA 13.0 이미지는 드라이버 580 이상, CUDA 12.8 이미지는 드라이버 570 이상이 필요합니다.
+Pick the image that matches the node's NVIDIA driver. CUDA 13.0 images need driver 580 or later; CUDA 12.8 images need driver 570 or later.
 
-위성영상 분류·분할은 타일 또는 patch 단위로 처리하면 VRAM 8GB 환경에서 학습할 수 있습니다. 대형 영상은 타일로 분할해 사용하는 것을 권장합니다.
+Satellite image classification/segmentation can be trained with 8 GB of VRAM when processed in tiles or patches. Split large images into tiles.
 
-rasterio·GeoPandas는 GDAL이 포함된 바이너리 패키지로 설치되어, GeoTIFF·Shapefile 등 일반적인 지리공간 포맷을 별도 시스템 설치 없이 다룰 수 있습니다.
+rasterio and GeoPandas are installed as binary packages that bundle GDAL, so common geospatial formats such as GeoTIFF and Shapefile work without any extra system installation.
 
-## 포함 환경
+## Installed packages
 
-패키지 버전은 이 폴더의 `requirements.txt`로 고정되어 있습니다. 태그별 기준일과 버전은 아래와 같습니다.
+Package versions are pinned in this folder's `requirements.txt`. The snapshot date and versions for each tag are listed below.
 
 ### `torch2.11-cuda13.0`
 
-**기준일:** 2026-11-10
+**As of:** 2026-11-10
 
-아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
+The versions below are a snapshot of this image. Run `pip show <package>` in the container terminal to check the installed version.
 
 <!-- VERSIONS:torch2.11-cuda13.0:START -->
-| 패키지 | 버전 |
+| Package | Version |
 |---|---|
 | rasterio | 1.5.0 |
 | GeoPandas | 1.1.3 |
@@ -56,12 +59,12 @@ rasterio·GeoPandas는 GDAL이 포함된 바이너리 패키지로 설치되어,
 
 ### `torch2.11-cuda12.8`
 
-**기준일:** 2026-11-10
+**As of:** 2026-11-10
 
-아래 버전은 해당 이미지 기준 스냅샷입니다. 컨테이너 터미널에서 `pip show <패키지>`로 현재 설치된 버전을 확인할 수 있습니다.
+The versions below are a snapshot of this image. Run `pip show <package>` in the container terminal to check the installed version.
 
 <!-- VERSIONS:torch2.11-cuda12.8:START -->
-| 패키지 | 버전 |
+| Package | Version |
 |---|---|
 | rasterio | 1.5.0 |
 | GeoPandas | 1.1.3 |
@@ -73,15 +76,15 @@ rasterio·GeoPandas는 GDAL이 포함된 바이너리 패키지로 설치되어,
 | ipywidgets | 8.1.8 |
 <!-- VERSIONS:torch2.11-cuda12.8:END -->
 
-## 환경변수
+## Environment variables
 
-모든 환경변수는 선택 사항입니다. 비공개 저장소를 사용하거나 커밋 작성자를 지정하려는 경우에만 입력합니다.
+All environment variables are optional. Set them only to use a private repository or to set the commit author.
 
-| 변수 | 기본값 | 설명 |
+| Variable | Default | Description |
 |---|---|---|
-| `JUPYTER_TOKEN` | (없음) | JupyterLab 접속 토큰. 미지정 시 토큰 없이 접속 |
-| `GIT_CLONE_REPO` | (없음) | 워크로드 시작 시 `/workspace`에 자동 clone할 저장소 URL. 네트워크 연결이 늦게 열리는 노드를 위해 실패 시 최대 1분간 재시도 |
-| `GIT_USER_NAME` | (없음) | git 커밋 작성자 이름 |
-| `GIT_USER_EMAIL` | (없음) | git 커밋 작성자 이메일 |
-| `GIT_TOKEN` | (없음) | git 인증 토큰(PAT). private 저장소 clone/push 시 필요 |
-| `GIT_HOST` | `github.com` | git 호스트. GitLab(`gitlab.com`) 또는 사내 git 서버 주소도 가능 |
+| `JUPYTER_TOKEN` | (none) | JupyterLab access token. If unset, JupyterLab opens without a token |
+| `GIT_CLONE_REPO` | (none) | Repository URL to clone into `/workspace` when the workload starts. Retries for up to 1 minute on failure, for nodes whose network comes up late |
+| `GIT_USER_NAME` | (none) | Git commit author name |
+| `GIT_USER_EMAIL` | (none) | Git commit author email |
+| `GIT_TOKEN` | (none) | Git access token (PAT). Needed to clone/push private repositories |
+| `GIT_HOST` | `github.com` | Git host. GitLab (`gitlab.com`) or an internal git server also works |

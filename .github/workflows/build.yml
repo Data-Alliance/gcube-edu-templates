@@ -243,20 +243,23 @@ jobs:
         if: ${{ inputs.mode == 'release' && inputs.update_readme }}
         run: |
           DATE_DASH=$(date -d "${{ inputs.release_date }}" +%Y-%m-%d)
-          python3 .github/scripts/update_readme_versions.py \
-            "./${{ matrix.template }}/README.md" \
-            "$TEST_IMAGE" \
-            "${{ matrix.tag }}" \
-            "$DATE_DASH"
+          for readme in README.md README.ko.md; do
+            [ -f "./${{ matrix.template }}/$readme" ] || continue
+            python3 .github/scripts/update_readme_versions.py \
+              "./${{ matrix.template }}/$readme" \
+              "$TEST_IMAGE" \
+              "${{ matrix.tag }}" \
+              "$DATE_DASH"
+          done
       - name: Commit README
         if: ${{ inputs.mode == 'release' && inputs.update_readme }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- "./${{ matrix.template }}/README.md"; then
+          if git diff --quiet -- "./${{ matrix.template }}"/README*.md; then
             echo "No README changes."
           else
-            git add "./${{ matrix.template }}/README.md"
+            git add "./${{ matrix.template }}"/README*.md
             git commit -m "docs: update ${{ matrix.template }} package versions (${{ matrix.tag }}, ${{ inputs.release_date }})"
             git pull --rebase origin ${{ github.ref_name }}
             git push origin HEAD:${{ github.ref_name }}
