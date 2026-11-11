@@ -3,6 +3,9 @@
 
 Usage: update_readme_versions.py <README> <image> <tag> <ref_date YYYY-MM-DD>
 
+Works for both README.md (English) and README.ko.md (Korean); the table header and
+the date label ("As of" / "기준일") of each file are kept.
+
 Each tag has its own section under "## 포함 환경", in the existing README format:
 
     ### `torch2.11-cuda13.0`
@@ -47,7 +50,7 @@ def package_names(table):
         if not line.startswith("|"):
             continue
         cells = [c.strip() for c in line.strip("|").split("|")]
-        if len(cells) != 2 or cells[0] == "패키지" or set(cells[0]) <= {"-", ":"}:
+        if len(cells) != 2 or cells[0] in ("패키지", "Package") or set(cells[0]) <= {"-", ":"}:
             continue
         names.append(cells[0])
     return names
@@ -72,7 +75,9 @@ for line in out.stdout.splitlines():
         versions[cur.lower()] = line.split(":", 1)[1].strip()
         cur = None
 
-rows, missing = ["| 패키지 | 버전 |", "|---|---|"], []
+# Keep the table header language of this README (e.g. "패키지 | 버전" or "Package | Version").
+header = next((l.strip() for l in source.group("table").splitlines() if l.strip().startswith("|")), "| 패키지 | 버전 |")
+rows, missing = [header, "|---|---|"], []
 for p in pkgs:
     v = versions.get(p.lower())
     if v is None:
@@ -80,7 +85,7 @@ for p in pkgs:
         v = "(미확인)"
     rows.append(f"| {p} | {v} |")
 
-head = re.sub(r"\*\*기준일:\*\*\s*\d{4}-\d{2}-\d{2}", f"**기준일:** {ref_date}", source.group("head"))
+head = re.sub(r"\*\*(기준일|As of):\*\*\s*\d{4}-\d{2}-\d{2}", lambda m: f"**{m.group(1)}:** {ref_date}", source.group("head"))
 section = (
     f"### `{tag}`\n{head}<!-- VERSIONS:{tag}:START -->\n"
     + "\n".join(rows)
